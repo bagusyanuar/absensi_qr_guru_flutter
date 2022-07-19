@@ -1,35 +1,30 @@
-import 'dart:developer';
-
-import 'package:absensi_qr_guru_flutter/helper/static_variable.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> loginHandler(
+Future<void> absenHandler(
     Map<String, String> data, BuildContext context) async {
   try {
     String _server = "http://192.168.100.86:8000/api/";
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? server = preferences.getString("server");
+    String? token = preferences.getString("token");
     if (server != null) {
       _server = "http://$server/api";
     }
-    log(_server);
     var formData = FormData.fromMap(data);
-    final response = await Dio().post("$_server/login",
-        options: Options(headers: {"Accept": "application/json"}),
+    final response = await Dio().post("$_server/absen",
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        }),
         data: formData);
-    print(response.data.toString());
     final int status = response.data["status"] as int;
-    // final String message = response.data["message"] as String;
+    final String message = response.data["message"] as String;
     if (status == 200) {
-      print("Login Success");
-      final String token = response.data["payload"]["access_token"] as String;
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      preferences.setString("token", token);
       Fluttertoast.showToast(
-        msg: "Login Success $token",
+        msg: "Berhasil Absen",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
@@ -37,19 +32,18 @@ Future<void> loginHandler(
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      Navigator.pushNamedAndRemoveUntil(
-          context, "/dashboard", ModalRoute.withName("/dashboard"));
+      Navigator.pop(context);
     } else {
-      print("Login Failed");
       Fluttertoast.showToast(
-        msg: "Gagal",
+        msg: message,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.blue,
         textColor: Colors.white,
         fontSize: 16.0,
       );
+      Navigator.pop(context);
     }
   } on DioError catch (e) {
     Fluttertoast.showToast(
@@ -61,6 +55,6 @@ Future<void> loginHandler(
       textColor: Colors.white,
       fontSize: 16.0,
     );
-    print("Error " + e.response.toString());
+    Navigator.pop(context);
   }
 }

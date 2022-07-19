@@ -16,6 +16,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   String username = '';
   String password = '';
+  String server = '';
   bool isLoading = false;
 
   @override
@@ -85,6 +86,24 @@ class _LoginState extends State<Login> {
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
+                margin: const EdgeInsets.only(bottom: 15),
+                child: TextField(
+                  onChanged: (text) {
+                    setState(() {
+                      server = text;
+                    });
+                  },
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 10),
+                      prefixIcon: const Icon(Icons.settings),
+                      hintText: "Server"),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: GestureDetector(
                   onTap: () {
                     if (!isLoading) {
@@ -132,6 +151,8 @@ class _LoginState extends State<Login> {
 
   void login(BuildContext context) async {
     Map<String, String> data = {"username": username, "password": password};
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString("server", server);
     print(data);
     setState(() {
       isLoading = true;

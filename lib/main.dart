@@ -1,5 +1,6 @@
 import 'package:absensi_qr_guru_flutter/view/dashboard.dart';
 import 'package:absensi_qr_guru_flutter/view/login.dart';
+import 'package:absensi_qr_guru_flutter/view/qrpage.dart';
 import 'package:absensi_qr_guru_flutter/view/splash.dart';
 import 'package:flutter/material.dart';
 
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         "/": (context) => const SplashScreen(),
         "/login": (context) => const Login(),
         "/dashboard": (context) => const Dashboard(),
+        "/qr": (context) => const QRpage(),
         // "/search": (context) => SearchView(),
         // "/detail": (context) => DetailPage(),
       },

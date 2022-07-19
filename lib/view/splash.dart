@@ -63,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 2));
     // SharedPreferences preferences = await SharedPreferences.getInstance();
     // String? token = preferences.getString("token");
-    Navigator.popAndPushNamed(context, "/dashboard");
+    Navigator.popAndPushNamed(context, "/login");
     // if (token != null) {
     // } else {
     //   //
