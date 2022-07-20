@@ -65,6 +65,7 @@ class _DashboardState extends State<Dashboard> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
                       onTap: () {
@@ -90,65 +91,12 @@ class _DashboardState extends State<Dashboard> {
                               ),
                             ),
                             const Text(
-                              "Absen Masuk",
+                              "Absen",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 24),
                             )
                           ],
                         ),
-                      ),
-                    ),
-                    Container(
-                      height: 120,
-                      margin: const EdgeInsets.only(bottom: 20),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blue),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 100,
-                            width: 100,
-                            decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage("assets/istirahat.png"),
-                                  fit: BoxFit.contain),
-                            ),
-                          ),
-                          const Text(
-                            "Istirahat",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 24),
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 120,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blue),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 60,
-                            width: 100,
-                            decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage("assets/pulang.png"),
-                                  fit: BoxFit.contain),
-                            ),
-                          ),
-                          const Text(
-                            "Absen Pulang",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 24),
-                          )
-                        ],
                       ),
                     ),
                   ],
