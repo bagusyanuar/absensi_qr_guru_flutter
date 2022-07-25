@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
@@ -62,49 +63,48 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Center(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, "/qr");
-                      },
-                      child: Container(
-                        height: 120,
-                        margin: const EdgeInsets.only(bottom: 20),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 100,
-                              width: 100,
-                              decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage("assets/absen.png"),
-                                    fit: BoxFit.contain),
-                              ),
-                            ),
-                            const Text(
-                              "Absen",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 24),
-                            )
-                          ],
-                        ),
+                    Container(
+                      height: 180,
+                      width: 180,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage("assets/logo.png"),
+                            fit: BoxFit.contain),
                       ),
                     ),
+                    const Text(
+                      "Sistem Absensi Guru",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
                   ],
                 ),
               ),
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: ((value) {
+          if (value == 1) {
+            Navigator.pushNamed(context, "/qr");
+          } else if (value == 2) {
+            Navigator.pushNamed(context, "/riwayat");
+          }
+        }),
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Beranda"),
+          BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: "Absen"),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: "Riwayat"),
+        ],
+        currentIndex: 0,
       ),
     );
   }

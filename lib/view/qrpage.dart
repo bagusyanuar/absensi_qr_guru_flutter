@@ -2,8 +2,11 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:absensi_qr_guru_flutter/controller/absen.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QRpage extends StatefulWidget {
   const QRpage({Key? key}) : super(key: key);
@@ -16,6 +19,8 @@ class _QRpageState extends State<QRpage> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
   QRViewController? controller;
+  double _qrLatitude = -7.5654864;
+  double _qrLongitude = 110.8434533;
 
   @override
   void reassemble() {
@@ -25,6 +30,13 @@ class _QRpageState extends State<QRpage> {
       controller!.pauseCamera();
     }
     controller!.resumeCamera();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _getQRLocation();
+    super.initState();
   }
 
   @override
@@ -38,6 +50,21 @@ class _QRpageState extends State<QRpage> {
         height: double.infinity,
         width: double.infinity,
         child: _buildQrView(context),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: ((value) {
+          if (value == 0) {
+            Navigator.pop(context);
+          } else if (value == 2) {
+            Navigator.popAndPushNamed(context, "/riwayat");
+          }
+        }),
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Beranda"),
+          BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: "Absen"),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: "Riwayat"),
+        ],
+        currentIndex: 1,
       ),
     );
   }
@@ -90,10 +117,61 @@ class _QRpageState extends State<QRpage> {
   void _absen(BuildContext context, String code) async {
     Map<String, String> data = {
       "code": code,
-      "tipe": "masuk",
-      "keterangan": ""
     };
-    await absenHandler(data, context);
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    double? myLatitude = preferences.getDouble("latitude");
+    double? myLongitude = preferences.getDouble("longitude");
+    if (myLatitude == _qrLatitude && myLongitude == _qrLongitude) {
+      await absenHandler(data, context);
+    } else {
+      Fluttertoast.showToast(
+        msg: "Maaf Lokasi Anda Tidak Sesuai",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      Navigator.pop(context);
+    }
+  }
+
+  void _getQRLocation() async {
+    try {
+      String _server = "http://192.168.100.86:8000/api/";
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String? server = preferences.getString("server");
+      if (server != null) {
+        _server = "http://$server/api";
+      }
+      final response = await Dio().get(
+        "$_server/lokasi",
+        options: Options(headers: {"Accept": "application/json"}),
+      );
+      log(response.data.toString());
+      final int status = response.data["status"] as int;
+      if (status == 200) {
+        final double latitude = response.data["payload"]["latitude"] as double;
+        final double longitude =
+            response.data["payload"]["longitude"] as double;
+        setState(() {
+          _qrLatitude = latitude;
+          _qrLongitude = longitude;
+        });
+      }
+    } on DioError catch (e) {
+      log(e.response!.data.toString());
+      Fluttertoast.showToast(
+        msg: "Gagal Mendapatkan Lokasi QRCode",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
   }
 
   @override

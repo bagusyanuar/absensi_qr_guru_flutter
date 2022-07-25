@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -34,6 +36,7 @@ Future<void> absenHandler(
       );
       Navigator.pop(context);
     } else {
+      log(message);
       Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
@@ -46,6 +49,7 @@ Future<void> absenHandler(
       Navigator.pop(context);
     }
   } on DioError catch (e) {
+    log(e.response!.data.toString());
     Fluttertoast.showToast(
       msg: "Terjadi Kesalahan " + e.message.toString(),
       toastLength: Toast.LENGTH_SHORT,
